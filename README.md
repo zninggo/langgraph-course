@@ -1,7 +1,7 @@
 # LangGraph🦜🕸️ – Develop LLM-Powered AI Agents
 
 
-![Logo](https://github.com/emarco177/langgraph-course/blob/main/banner.png)
+![Logo](banner.png)
 
 [![Udemy](https://img.shields.io/badge/Udemy-Course-EC5252?style=for-the-badge&logo=udemy&logoColor=white)](https://www.udemy.com/course/langgraph/?couponCode=APRIL-2026) 
 [![Rating](https://img.shields.io/badge/Rating-4.7/5-brightgreen?style=for-the-badge)](https://www.udemy.com/course/langgraph/) 
