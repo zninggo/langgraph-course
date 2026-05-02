@@ -22,7 +22,5 @@ def triple(number: float) -> float:
 tools = [triple, TavilySearch(max_results=1)]
 
 llm = ChatOpenAI(
-    model='gpt-5.5',
-    base_url=os.getenv('openai_base_url'),
-    temperature=0.7
+    model="gpt-5.5", base_url=os.getenv("openai_base_url"), temperature=0.7
 ).bind_tools(tools)
