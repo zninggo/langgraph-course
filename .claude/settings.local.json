@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node *)",
+      "Bash(curl -s -X POST \"http://localhost:3456/eval?target=ID\" -d 'document.title')",
+      "Bash(curl -s \"http://localhost:3456/new?url=https://visualstudio.microsoft.com/visual-cpp-build-tools/\")",
+      "Bash(curl *)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "WebSearch"
+    ]
+  }
+}
