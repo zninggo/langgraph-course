@@ -16,7 +16,7 @@ prompt_messages = ChatPromptTemplate.from_messages(
     3. 推荐搜索查询以查找信息并改进你的答案。
     """,
         ),
-        # MessagesPlaceholder(variable_name='messages'),
+        MessagesPlaceholder(variable_name="messages"),
         ("system", "请使用规定的格式回答上述用户的问题。"),
     ]
 )
