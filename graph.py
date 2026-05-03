@@ -56,7 +56,7 @@ def update_context(state: State) -> State:
 
 
 def router(state: State) -> Literal["tools", END]:
-    search_queries= state.get("search_queries")
+    search_queries = state.get("search_queries")
     print(f'{",".join(search_queries)} 还没查询呢~')
     if search_queries is not None:
         return "tools"
