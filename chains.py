@@ -36,5 +36,7 @@ revise_instructions = """用新信息修改你之前的答案.
 
 revise_prompt = prompt.partial(first=revise_instructions)
 
+
 if __name__ == "__main__":
     print(revise_prompt)
+
