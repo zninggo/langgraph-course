@@ -21,9 +21,20 @@ prompt_messages = ChatPromptTemplate.from_messages(
     ]
 )
 
-prompt = prompt_messages.partial(
-    time=lambda: datetime.datetime.now().isoformat(), first="提供一个详细的答案"
-)
+prompt = prompt_messages.partial(time=lambda: datetime.datetime.now().isoformat())
+
+call_llm_prompt = prompt.partial(first="提供一个详细的答案")
+
+revise_instructions = """用新信息修改你之前的答案.
+    - 你应该利用之前的批评为你的答案添加重要信息。
+        - 您必须在修订后的答案中包含数字引用，以确保可验证。
+        - 在答案底部添加“参考文献”部分（不计入字数限制）。形式为:
+            - [1] https://example.com
+            - [2] https://example.com
+    - 你应该用之前的点评来剔除多余的信息，并确保答案不超过250字.
+"""
+
+revise_prompt = prompt.partial(first=revise_instructions)
 
 if __name__ == "__main__":
-    print(prompt)
+    print(revise_prompt)

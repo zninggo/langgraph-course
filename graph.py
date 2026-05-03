@@ -1,7 +1,8 @@
 import os
+from typing import List, Literal, NotRequired
 
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers import (JsonOutputParser,
                                            JsonOutputToolsParser,
                                            PydanticOutputParser,
@@ -12,8 +13,9 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, MessagesState, StateGraph
 from pydantic import Field
 
-from chains import prompt
+from chains import call_llm_prompt, prompt
 from schemas import AnswerQuestion
+from tool_executor import tool_node
 
 load_dotenv(override=True)
 
@@ -27,6 +29,7 @@ pydantic_parser = PydanticToolsParser(tools=[AnswerQuestion])
 
 
 class State(MessagesState):
+    search_queries: NotRequired[List[str]]
     pass
 
 
@@ -39,30 +42,52 @@ def call_llm(state: State) -> State:
         llm.bind_tools(tools=[AnswerQuestion], tool_choice="AnswerQuestion")
         | pydantic_parser
     )
-    LLMMessage = chains.invoke(state.get('messages',[]))[-1]
+    LLMMessage = chains.invoke(state.get("messages", []))[-1]
+
+    return State(
+        messages=[AIMessage(content=LLMMessage.answer)],
+        search_queries=LLMMessage.search_queries,
+    )
 
 
-    return State(messages=[AIMessage(content=LLMMessage.answer)])
+def update_context(state: State) -> State:
+
+    return State(messages=[])
+
+
+def router(state: State) -> Literal["tools", END]:
+    search_queries= state.get("search_queries")
+    print(f'{",".join(search_queries)} 还没查询呢~')
+    if search_queries is not None:
+        return "tools"
+    else:
+        return END
 
 
 graph.add_node("call_llm", call_llm)
+graph.add_node("tools", tool_node)
+graph.add_node("update_context", update_context)
 
 graph.add_edge(START, "call_llm")
-graph.add_edge("call_llm", END)
+graph.add_edge("call_llm", "update_context")
+graph.add_edge("tools", "update_context")
+
+graph.add_conditional_edges("update_context", router)
+# graph.add_edge("call_llm", END)
 
 checkpointer = InMemorySaver()
 config = {"configurable": {"thread_id": "1"}}
 
 app = graph.compile(checkpointer=checkpointer)
 
-# png = app.get_graph().draw_mermaid_png()
-# with open("graph.png", "wb") as f:
-#     f.write(png)
+png = app.get_graph().draw_mermaid_png()
+with open("graph.png", "wb") as f:
+    f.write(png)
 
 if __name__ == "__main__":
     print(f"hello reflexion agent")
 
-    system_prompt = prompt.invoke({"messages": [HumanMessage("""
+    system_prompt = call_llm_prompt.invoke({"messages": [HumanMessage("""
     撰写关于人工智能驱动的片上系统/自主片上系统问题领域的文章，
     列出从事该领域研究并已获得融资的初创公司。
     """)]})
