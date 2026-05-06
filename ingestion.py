@@ -23,9 +23,7 @@ documents_list = [WebBaseLoader(url).load() for url in urls]
 documents = [document for item in documents_list for document in item]
 
 # 分块
-text_splitter =RecursiveCharacterTextSplitter(
-    chunk_size=250,chunk_overlap=0
-)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=0)
 
 all_splits = text_splitter.split_documents(documents)
 
@@ -33,8 +31,8 @@ print(f"Split blog post into {len(all_splits)} sub-documents.")
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-bge-m3",
-    base_url=os.getenv('openai_base_url'),
-    api_key=os.getenv('OPENAI_API_KEY'),
+    base_url=os.getenv("openai_base_url"),
+    api_key=os.getenv("OPENAI_API_KEY"),
     # 控制 LangChain 是否在发送请求前检查输入文本是否超过模型的 token 上下文长度限制。
     #
     #   - True（默认）：LangChain 会先计算 token 数，超长则自动截断或拆分批次
@@ -59,4 +57,4 @@ if __name__ == "__main__":
     uuids = [str(uuid4()) for _ in range(len(documents))]
 
     vector_store.add_documents(documents=documents, ids=uuids)
-    print('加载完毕...')
+    print("加载完毕...")
