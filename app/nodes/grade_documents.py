@@ -22,15 +22,14 @@ def grade_documents(state: GraphState) -> Dict[str, any]:
         grade = result.binary_score.lower()
 
         if grade == "yes":
-            print('document 与内容相关...')
+            print("document 与内容相关...")
             filter_documents.append(document)
         else:
-            print('document 与内容不相关...')
+            print("document 与内容不相关...")
             web_search = True
 
     return {
         "documents": filter_documents,
-        'web_search': web_search,
-        'question': question,
+        "web_search": web_search,
+        "question": question,
     }
-

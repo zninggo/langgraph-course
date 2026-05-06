@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 load_dotenv(override=True)
 
