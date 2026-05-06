@@ -50,6 +50,9 @@ vector_store = Chroma(
     persist_directory=f'{Path(__file__).resolve().parent / ".chromadb"}',
 )
 
+#  检索器
+retriever = vector_store.as_retriever()
+
 
 if __name__ == "__main__":
     print(Path(__file__).resolve().parent)
