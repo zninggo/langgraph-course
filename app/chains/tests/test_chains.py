@@ -1,6 +1,7 @@
 import requests
 from dotenv import load_dotenv
 
+from app.chains.generation import generation_chain
 from app.chains.retrieval_grader import GradeDocuments, retrieval_grader
 from ingestion import retriever
 
@@ -16,3 +17,12 @@ def test_retrieval_grader_answer_no() -> None:
     )
     print(result)
     assert result.binary_score == "yes"
+
+
+def test_retrieval_generation_chain() -> None:
+    question = "agent memory"
+    docs = retriever.invoke(question)
+
+    response = generation_chain.invoke({"question": question, "context": docs[0]})
+
+    print(response)

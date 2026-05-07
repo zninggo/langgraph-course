@@ -12,22 +12,7 @@ load_dotenv(override=True)
 
 os.environ["USER_AGENT"] = "rag-chroma"
 
-urls = [
-    "https://lilianweng.github.io/posts/2023-06-23-agent/",
-    "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
-    "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
-]
 
-# loader
-documents_list = [WebBaseLoader(url).load() for url in urls]
-documents = [document for item in documents_list for document in item]
-
-# 分块
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=0)
-
-all_splits = text_splitter.split_documents(documents)
-
-print(f"Split blog post into {len(all_splits)} sub-documents.")
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-bge-m3",
@@ -53,6 +38,23 @@ retriever = vector_store.as_retriever()
 
 
 if __name__ == "__main__":
+    urls = [
+        "https://lilianweng.github.io/posts/2023-06-23-agent/",
+        "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
+        "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
+    ]
+
+    # loader
+    documents_list = [WebBaseLoader(url).load() for url in urls]
+    documents = [document for item in documents_list for document in item]
+
+    # 分块
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=0)
+
+    all_splits = text_splitter.split_documents(documents)
+
+    print(f"Split blog post into {len(all_splits)} sub-documents.")
+
     print(Path(__file__).resolve().parent)
     uuids = [str(uuid4()) for _ in range(len(documents))]
 
