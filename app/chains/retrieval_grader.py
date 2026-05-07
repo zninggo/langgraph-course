@@ -3,6 +3,7 @@ from typing import List
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableLambda
 from pydantic import BaseModel, Field
+
 from llm import llm
 
 # 基本不用 用下边的方法
@@ -13,6 +14,7 @@ class GradeDocuments(BaseModel):
     """检索内容的评分"""
 
     binary_score: str = Field(description="文档与问题是否相关 yes 或 no")
+
 
 def build_messages(state) -> List[BaseMessage]:
 
