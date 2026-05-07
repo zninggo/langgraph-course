@@ -16,7 +16,7 @@ os.environ["USER_AGENT"] = "rag-chroma"
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-bge-m3",
-    base_url=os.getenv("openai_base_url"),
+    base_url=os.getenv("LOCAL_BASE_URL"),
     api_key=os.getenv("OPENAI_API_KEY"),
     # 控制 LangChain 是否在发送请求前检查输入文本是否超过模型的 token 上下文长度限制。
     #

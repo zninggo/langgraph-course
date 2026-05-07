@@ -48,5 +48,5 @@ def build_messages(state) -> List[BaseMessage]:
   这就是为什么 with_structured_output 比 PydanticOutputParser 更好——不依赖模型的文本输出格式，不怕思考内容、不怕格式错误。
 """
 retrieval_grader = RunnableLambda(build_messages) | llm.with_structured_output(
-    GradeDocuments
+    GradeDocuments, method="function_calling"
 )
