@@ -12,7 +12,7 @@ def generation_node(state: GraphState) -> Dict[str, any]:
 
     generation = generation_chain.invoke({"question": question, "context": context})
 
-    print('----------结果已出----------')
+    print("----------结果已出----------")
 
     return {
         "question": question,

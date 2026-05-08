@@ -13,7 +13,6 @@ load_dotenv(override=True)
 os.environ["USER_AGENT"] = "rag-chroma"
 
 
-
 embeddings = OpenAIEmbeddings(
     model="text-embedding-bge-m3",
     base_url=os.getenv("LOCAL_BASE_URL"),

@@ -13,7 +13,7 @@ search_tool = TavilySearch(max_results=3)
 
 def search_node(state: GraphState) -> Dict[str, any]:
     """需要网络搜索的节点"""
-    print('开始网络搜索了...')
+    print("开始网络搜索了...")
     question = state["question"]
     documents = state["documents"]
 

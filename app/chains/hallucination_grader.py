@@ -1,6 +1,6 @@
 from typing import List
 
-from langchain_core.messages import BaseMessage, SystemMessage, HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableLambda
 from pydantic import BaseModel, Field
 
@@ -12,7 +12,10 @@ from llm import llm
 
 class HallucinationGrader(BaseModel):
     """评估llm的答案是否有数据支持"""
-    binary_score: bool = Field(description='yes 表示答案有事实依据，no 表示答案是幻觉/无事实支持')
+
+    binary_score: bool = Field(
+        description="yes 表示答案有事实依据，no 表示答案是幻觉/无事实支持"
+    )
 
 
 def build_messages(state: GraphState) -> List[BaseMessage]:
@@ -26,11 +29,13 @@ def build_messages(state: GraphState) -> List[BaseMessage]:
             """),
         HumanMessage(content=f"""
             事实集合：\n\n {state.get('documents')} \n\n LLM 答案：{state.get('generation')}
-        """)
+        """),
     ]
 
 
-hallucination_grader_chain = RunnableLambda(build_messages) | llm.with_structured_output(HallucinationGrader, method="function_calling")
+hallucination_grader_chain = RunnableLambda(
+    build_messages
+) | llm.with_structured_output(HallucinationGrader, method="function_calling")
 """
   method="function_calling" 根本原因：
 
