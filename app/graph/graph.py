@@ -5,6 +5,7 @@ from langgraph.graph import StateGraph
 
 from app.chains.answer_grader import  answer_grader_chain
 from app.chains.hallucination_grader import hallucination_grader_chain, HallucinationGrader
+from app.chains.router import router_query_chain, RouterQuery
 from app.graph.consts import (GENERATION_NODE, GRADE_DOCUMENTS_NODE,
                               RETRIEVE_NODES, SEARCH_NODE)
 from app.graph.state import GraphState
@@ -58,6 +59,24 @@ def grade_generation_grounded_in_documents_and_question(state: GraphState) -> Li
         print('--- 内容与documents无关,重试---')
         return 'not supported'
 
+def router_query_to_vectorstore_or_websearch(state: GraphState) -> Literal[SEARCH_NODE, RETRIEVE_NODES]:
+
+    question = state["question"]
+
+    print(f'用户的问题是 -> {question}')
+
+
+    to_node: RouterQuery = router_query_chain.invoke({
+        "question": question,
+    })
+
+    print(f'路由判断的结果是 -> {to_node.datasource}')
+
+    if to_node.datasource == 'websearch':
+        return SEARCH_NODE
+    else:
+        return RETRIEVE_NODES
+
 
 graph = StateGraph(GraphState)
 
@@ -67,11 +86,15 @@ graph.add_node(RETRIEVE_NODES, retrieve_nodes)
 graph.add_node(GENERATION_NODE, generation_node)
 
 
-graph.add_edge(START, RETRIEVE_NODES)
+# graph.add_edge(START, RETRIEVE_NODES)
 graph.add_edge(RETRIEVE_NODES, GRADE_DOCUMENTS_NODE)
 graph.add_edge(SEARCH_NODE, GENERATION_NODE)
 # graph.add_edge(GENERATION_NODE, END)
 
+# graph.add_conditional_edges(START, router_query_to_vectorstore_or_websearch)
+
+graph.set_conditional_entry_point(router_query_to_vectorstore_or_websearch)
+# graph.set_entry_point()
 
 graph.add_conditional_edges(GRADE_DOCUMENTS_NODE, decide_to_generate)
 
@@ -90,7 +113,7 @@ app = graph.compile()
 # with open("./graph.png", "wb") as f:
 #     f.write(png)
 
-# print(app.get_graph().draw_mermaid())
+print(app.get_graph().draw_mermaid())
 # https://mermaid.live/
 
 if __name__ == "__main__":

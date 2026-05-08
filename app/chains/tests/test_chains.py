@@ -5,6 +5,7 @@ from app.chains.generation import generation_chain
 from app.chains.hallucination_grader import (HallucinationGrader,
                                              hallucination_grader_chain)
 from app.chains.retrieval_grader import GradeDocuments, retrieval_grader
+from app.chains.router import router_query_chain, RouterQuery
 from ingestion import retriever
 
 load_dotenv(override=True)
@@ -42,3 +43,16 @@ def test_hallucination_grader_answer_no() -> None:
     )
     print(result)
     assert not result.binary_score
+
+
+def test_router_query_to_vectorstore() -> None:
+    """测试router是否能路由到向量数据库"""
+    result:RouterQuery = router_query_chain.invoke({"question": "agent memory"})
+    print(result)
+    assert result.datasource == 'vectorstore'
+
+def test_router_query_to_websearch() -> None:
+    """测试router是否能路由到网络搜索"""
+    result:RouterQuery = router_query_chain.invoke({"question": "披萨好吃吗"})
+    print(result)
+    assert result.datasource == 'websearch'

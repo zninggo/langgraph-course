@@ -15,7 +15,7 @@ def search_node(state: GraphState) -> Dict[str, any]:
     """需要网络搜索的节点"""
     print("开始网络搜索了...")
     question = state["question"]
-    documents = state["documents"]
+    documents = state.get("documents", None)
 
     response = search_tool.invoke({"query": question})
 
